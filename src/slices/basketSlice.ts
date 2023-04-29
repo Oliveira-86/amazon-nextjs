@@ -1,5 +1,5 @@
 import { RootState } from '@/app/store'
-import { createSlice } from '@reduxjs/toolkit'
+import { CaseReducer, PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   items: [],
@@ -9,7 +9,9 @@ export const basketSlice = createSlice({
   name: 'basket',
   initialState,
   reducers: {
-    addToBasket: (state, action) => {},
+    addToBasket: (state: any, action) => {
+      state.items = [...state.items, action.payload]
+    },
     removeFromBasket: (state, action) => {},
   },
 })

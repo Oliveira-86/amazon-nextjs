@@ -2,6 +2,8 @@ import { FC, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { StarIcon } from '@heroicons/react/solid'
 import CurrencyFormat from 'react-currency-format'
+import { useDispatch } from 'react-redux'
+import { addToBasket } from '@/slices/basketSlice'
 
 interface ProductsProps {
   id: number
@@ -23,13 +25,20 @@ const Products: FC<ProductsProps> = (
     Math.floor(Math.random() * (MAX_RATINGS - MIN_RATINGS + 1)) + MIN_RATINGS
   )
   const [hasPrime, setHasPrime] = useState(false)
-
   const [hasMounted, setHasMounted] = useState(false) // <-- add this
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     setHasMounted(true)
     setHasPrime(Math.random() < 0.5)
   }, [])
+
+  const onHanleBasket = () => {
+    const product = { id, title, price, description, category, image }
+
+    dispatch(addToBasket(product))
+  }
 
   return (
     <div
@@ -84,7 +93,9 @@ const Products: FC<ProductsProps> = (
         )}
       </div>
 
-      <button className="mt-auto button">Add basket</button>
+      <button onClick={onHanleBasket} className="mt-auto button">
+        Add basket
+      </button>
     </div>
   )
 }

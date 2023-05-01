@@ -35,7 +35,16 @@ const Products: FC<ProductsProps> = (
   }, [])
 
   const onHanleBasket = () => {
-    const product = { id, title, price, description, category, image }
+    const product = {
+      id,
+      title,
+      price,
+      description,
+      category,
+      image,
+      hasPrime,
+      ratings,
+    }
 
     dispatch(addToBasket(product))
   }

@@ -1,3 +1,4 @@
+import CheckoutProduct from '@/components/CheckoutProduct'
 import useWindowDimensions from '@/hooks/useWindowsDimensions'
 import { selectItems } from '@/slices/basketSlice'
 import Image from 'next/image'
@@ -16,6 +17,8 @@ interface ProductsProps {
   description: string
   category: string
   image: string
+  hasPrime: boolean
+  ratings: number
 }
 
 const Checkout: FC<CheckoutProps> = ({}) => {
@@ -47,10 +50,19 @@ const Checkout: FC<CheckoutProps> = ({}) => {
                 ? 'Your Amazon Basket is empty'
                 : 'Shopping Basket'}
             </h1>
-            {items.map((item: ProductsProps, _) => {
-              console.log(item.title)
-              return <p>{item.title}</p>
-            })}
+            {items.map((item: ProductsProps, _) => (
+              <CheckoutProduct
+                key={item.id}
+                id={item.id}
+                title={item.title}
+                price={item.price}
+                description={item.description}
+                category={item.category}
+                image={item.image}
+                hasPrime={item.hasPrime}
+                ratings={item.ratings}
+              />
+            ))}
           </div>
         </div>
 

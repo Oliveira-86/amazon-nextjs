@@ -1,9 +1,12 @@
 import CheckoutProduct from '@/components/CheckoutProduct'
 import useWindowDimensions from '@/hooks/useWindowsDimensions'
-import { selectItems } from '@/slices/basketSlice'
+import { selectItems, selectTotal } from '@/slices/basketSlice'
 import Image from 'next/image'
 import { FC, useEffect, useState } from 'react'
+import CurrencyFormat from 'react-currency-format'
+import { useSession } from 'next-auth/react'
 import { useSelector } from 'react-redux'
+import useScrollPosition from '@/hooks/useScrollPosition'
 
 type CheckoutProps = {
   width: number
@@ -23,19 +26,24 @@ interface ProductsProps {
 
 const Checkout: FC<CheckoutProps> = ({}) => {
   const [hasMounted, setHasMounted] = useState(false) // <-- add this
+  const { data: session } = useSession()
 
-  const { width, height }: CheckoutProps = useWindowDimensions()
+  const { width }: CheckoutProps = useWindowDimensions()
+  const scrollPosition: number | undefined = useScrollPosition()
+
+  console.log(scrollPosition)
 
   const items = useSelector(selectItems)
+  const total = useSelector(selectTotal)
 
   useEffect(() => {
     setHasMounted(true)
   }, [])
 
   return (
-    <div className="bg-gray-100">
-      <main className="lg:flex max-w-screen-2xl mx-auto">
-        <div className="flex-grow m-5 shadow-5">
+    <div className="bg-gray-100 h-[100%]">
+      <main className="lg:flex max-w-screen-3x1 mx-auto justify-center">
+        <div className="flex-grow m-5 shadow-5 md:max-w-[75%] bg-black">
           <Image
             alt="checkout banner"
             src="https://links.papareact.com/ikj"
@@ -64,7 +72,36 @@ const Checkout: FC<CheckoutProps> = ({}) => {
           </div>
         </div>
 
-        <div>side</div>
+        <div className="relative lg:min-w-[220px]" />
+        {items.length > 0 && (
+          <div
+            className={`flex flex-col p-10 bg-white mt-5 shadow-md md:min-w-[15%] max-h-[40vh] md:fixed md:right-6 lg:right-6 ${
+              scrollPosition !== undefined && scrollPosition >= 100 && 'top-3'
+            }`}
+          >
+            <>
+              <h2 className="whitespace-nowrap">
+                Subtotal ({items.length} items):{' '}
+              </h2>
+              <span className="font-bold">
+                <CurrencyFormat
+                  value={total.toFixed(2)}
+                  displayType={'text'}
+                  thousandSeparator={true}
+                  prefix={'R$'}
+                />
+              </span>
+              <button
+                className={`button mt-2 ${
+                  !session &&
+                  'from-gray-300 to-gray-500 border-gray-200 text-gray-300 cursor-not-allowed'
+                }`}
+              >
+                {!session ? 'Sign in to checkout' : 'Proceed to checkout'}
+              </button>
+            </>
+          </div>
+        )}
       </main>
     </div>
   )

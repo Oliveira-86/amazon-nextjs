@@ -1,7 +1,9 @@
+import { addToBasket, removeFromBasket } from '@/slices/basketSlice'
 import { StarIcon } from '@heroicons/react/solid'
 import Image from 'next/image'
 import { FC } from 'react'
 import CurrencyFormat from 'react-currency-format'
+import { useDispatch } from 'react-redux'
 
 interface CheckoutProductProps {
   id: number
@@ -24,6 +26,26 @@ const CheckoutProduct: FC<CheckoutProductProps> = ({
   hasPrime,
   ratings,
 }) => {
+  const dispatch = useDispatch()
+
+  const onHanleBasket = () => {
+    const product = {
+      id,
+      title,
+      price,
+      description,
+      category,
+      image,
+      hasPrime,
+      ratings,
+    }
+
+    dispatch(addToBasket(product))
+  }
+
+  const onRemoveItemFromBasket = () => {
+    dispatch(removeFromBasket({ id }))
+  }
   return (
     <div className="grid grid-cols-5">
       <Image alt="title" src={image} width={150} height={150} />
@@ -58,8 +80,12 @@ const CheckoutProduct: FC<CheckoutProductProps> = ({
       </div>
 
       <div className="flex flex-col gap-2 my-auto justify-self-end">
-        <button className="button">add to basket</button>
-        <button className="button">remove from basket</button>
+        <button onClick={onHanleBasket} className="button">
+          add to basket
+        </button>
+        <button onClick={onRemoveItemFromBasket} className="button">
+          remove from basket
+        </button>
       </div>
     </div>
   )

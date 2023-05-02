@@ -28,12 +28,10 @@ const Checkout: FC<CheckoutProps> = ({}) => {
 
   const items = useSelector(selectItems)
 
-  console.log('width: ', width)
-
   useEffect(() => {
     setHasMounted(true)
   }, [])
-  console.log(items)
+
   return (
     <div className="bg-gray-100">
       <main className="lg:flex max-w-screen-2xl mx-auto">
@@ -44,7 +42,7 @@ const Checkout: FC<CheckoutProps> = ({}) => {
             width={width >= 1025 ? width * 0.7 : width}
             height={250}
           />
-          <div className="flex flex-col p-5 space-y-10 bg-white">
+          <div className="flex flex-col mt-2 p-5 space-y-10 bg-white">
             <h1 className="text-3x1 border-b pb-4">
               {items.length === 0
                 ? 'Your Amazon Basket is empty'

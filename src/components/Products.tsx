@@ -92,10 +92,12 @@ const Products: FC<ProductsProps> = (
 
         {hasPrime && (
           <div className="flex items-center space-x-2">
-            <img
-              className="w-12"
-              src="https://links.papareact.com/fdw"
-              alt=""
+            <Image
+              loading="lazy"
+              src="/amazon_prime.jpg"
+              alt="prime"
+              width={50}
+              height={25}
             />
             <p className="text-xs text-gray-500">FREE Next-day Delivery</p>
           </div>

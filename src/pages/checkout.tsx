@@ -7,6 +7,9 @@ import CurrencyFormat from 'react-currency-format'
 import { useSession } from 'next-auth/react'
 import { useSelector } from 'react-redux'
 import useScrollPosition from '@/hooks/useScrollPosition'
+import { loadStripe } from '@stripe/stripe-js'
+import axios from 'axios'
+const stripePromisse = loadStripe(`${process.env.stripe_public_key}`)
 
 type CheckoutProps = {
   width: number
@@ -31,14 +34,30 @@ const Checkout: FC<CheckoutProps> = ({}) => {
   const { width }: CheckoutProps = useWindowDimensions()
   const scrollPosition: number | undefined = useScrollPosition()
 
-  console.log(scrollPosition)
-
   const items = useSelector(selectItems)
   const total = useSelector(selectTotal)
 
   useEffect(() => {
     setHasMounted(true)
   }, [])
+
+  const createCheckoutSessions = async () => {
+    const stripe = await stripePromisse
+
+    const checkoutSession = await axios.post('/api/create-checkout-session', {
+      items,
+      email: session?.user?.email,
+    })
+    console.log('checkoutSession: ', checkoutSession)
+
+    const result = await stripe?.redirectToCheckout({
+      sessionId: checkoutSession.data.id,
+    })
+
+    if (result?.error) {
+      alert(result.error.message)
+    }
+  }
 
   return (
     <div className="bg-gray-100 h-[100%]">
@@ -92,6 +111,8 @@ const Checkout: FC<CheckoutProps> = ({}) => {
                 />
               </span>
               <button
+                role="link"
+                onClick={createCheckoutSessions}
                 className={`button mt-2 ${
                   !session &&
                   'from-gray-300 to-gray-500 border-gray-200 text-gray-300 cursor-not-allowed'
